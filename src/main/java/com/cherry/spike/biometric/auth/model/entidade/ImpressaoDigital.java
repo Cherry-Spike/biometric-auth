@@ -1,27 +1,35 @@
 package com.cherry.spike.biometric.auth.model.entidade;
 
-import com.sun.istack.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-@Entity
+@Entity(name = "tbl_ImpressaoDigital")
 @NoArgsConstructor
+@AllArgsConstructor()
+@RequiredArgsConstructor(staticName = "novo")
 public class ImpressaoDigital {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
+    @Column(name = "ID_Digital")
+    @Getter
     private long id;
-    @NotNull
-    @Getter @Setter
-    private byte[] imagem;
-
-    public ImpressaoDigital(byte[] imagem) {
-        this.imagem = imagem;
-    }
+    @Getter
+    @NonNull
+    @Column(name = "Nome", nullable = false)
+    private String nome;
+    @Getter
+    @NonNull
+    @Column(name = "TipoArquivo", nullable = false)
+    private String tipoArquivo;
+    @Getter
+    @NonNull
+    @Lob
+    @Column(name = "Conteudo", nullable = false)
+    private byte[] conteudo;
+    @Getter
+    @NonNull
+    @OneToOne(optional = false)
+    @JoinColumn(name = "Usuario_ID")
+    private Usuario usuario;
 }
