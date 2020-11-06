@@ -15,6 +15,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.unit.DataSize;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.MultipartConfigElement;
 
@@ -41,7 +43,7 @@ public class BiometricAuthApplication {
 			diretor.setNivel(administrador);
 			cargoRepositorio.save(diretor);
 			log.info("Usuario");
-			UsuarioDTO usuario = new UsuarioDTO("Everton", "Ferreira", diretor.getId(), "everton42", "123");
+			UsuarioDTO usuario = new UsuarioDTO(0, "Everton", "Ferreira", diretor.getId(), "everton42", "123");
 			usuarioServico.salvar(usuario);
 			log.info("Finalizado");
 			log.info("-------------------------------");
@@ -54,5 +56,15 @@ public class BiometricAuthApplication {
 		factory.setMaxFileSize(DataSize.ofMegabytes(MAX_REQUEST_SIZE_IN_MB));
 		factory.setMaxRequestSize(DataSize.ofMegabytes(MAX_REQUEST_SIZE_IN_MB));
 		return factory.createMultipartConfig();
+	}
+
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedOrigins("http://localhost:8080");
+			}
+		};
 	}
 }

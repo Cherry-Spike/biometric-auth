@@ -3,6 +3,7 @@ package com.cherry.spike.biometric.auth.service;
 import com.cherry.spike.biometric.auth.model.excecoes.UsuarioNaoEncontradoException;
 import com.cherry.spike.biometric.auth.model.entidade.ImpressaoDigital;
 import com.cherry.spike.biometric.auth.model.entidade.Usuario;
+import com.cherry.spike.biometric.auth.model.excecoes.UsuarioPossuiImpDigitalException;
 import com.cherry.spike.biometric.auth.repository.ImpDigitalRepositorio;
 import com.cherry.spike.biometric.auth.repository.UsuarioRepositorio;
 import com.machinezoo.sourceafis.FingerprintImage;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class ImpressaoDigitalServico {
     private static final String USUARIO_NAO_ENCONTRADO_MENSAGEM = "Usuário não encontrado!";
     private static final double MINIMO_PERCENTUAL = 40;
+    private static final String USUARIO_JA_POSSUI_IMPDIGITAL_MENSAGEM = "Usuário já possui uma impressão digital!";
     private final ImpDigitalRepositorio impDigitalRepositorio;
     private final UsuarioRepositorio usuarioRepositorio;
 
@@ -31,15 +33,22 @@ public class ImpressaoDigitalServico {
     public Optional<ImpressaoDigital> salvar(MultipartFile arquivo, long usuarioId) throws IOException {
         if(!ehUsuarioValido(usuarioId))
             throw new UsuarioNaoEncontradoException(USUARIO_NAO_ENCONTRADO_MENSAGEM);
-
-        String nomeArquivo = StringUtils.cleanPath(arquivo.getOriginalFilename());
         Optional<Usuario> usuario = usuarioRepositorio.findById(usuarioId);
         if (!usuario.isPresent())
             throw new UsuarioNaoEncontradoException(USUARIO_NAO_ENCONTRADO_MENSAGEM);
 
+        if(usuarioPossuiImpDigital(usuarioId))
+            throw new UsuarioPossuiImpDigitalException(USUARIO_JA_POSSUI_IMPDIGITAL_MENSAGEM);
+
+        String nomeArquivo = StringUtils.cleanPath(arquivo.getOriginalFilename());
         ImpressaoDigital arquivoDb =
             arquivoDb = ImpressaoDigital.novo(nomeArquivo, arquivo.getContentType(), arquivo.getBytes(), usuario.get());
+
         return Optional.of(impDigitalRepositorio.save(arquivoDb));
+    }
+
+    private boolean usuarioPossuiImpDigital(long usuarioId) {
+        return impDigitalRepositorio.findByUsuarioId(usuarioId).isPresent();
     }
 
     private boolean ehUsuarioValido(long usuarioId) {
@@ -52,7 +61,7 @@ public class ImpressaoDigitalServico {
             Optional<Usuario> usuario = usuarioRepositorio.findByLogin(login);
             if (!usuario.isPresent())
                 throw new UsuarioNaoEncontradoException(MessageFormat.format("Usuario com login {1}, não encontrado",login));
-            Optional<ImpressaoDigital> impressaoDigital = impDigitalRepositorio.findByUsuario(usuario.get());
+            Optional<ImpressaoDigital> impressaoDigital = impDigitalRepositorio.findByUsuarioId(usuario.get().getId());
 
             FingerprintTemplate impressaoDigitalBd = new FingerprintTemplate(
                     new FingerprintImage()

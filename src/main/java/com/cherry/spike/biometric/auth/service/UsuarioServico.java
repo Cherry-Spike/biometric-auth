@@ -4,6 +4,8 @@ import com.cherry.spike.biometric.auth.model.dtos.UsuarioDTO;
 import com.cherry.spike.biometric.auth.model.entidade.Cargo;
 import com.cherry.spike.biometric.auth.model.excecoes.CargoNaoEncontradoException;
 import com.cherry.spike.biometric.auth.model.entidade.Usuario;
+import com.cherry.spike.biometric.auth.model.excecoes.LoginInvalidoException;
+import com.cherry.spike.biometric.auth.model.excecoes.UsuarioNaoEncontradoException;
 import com.cherry.spike.biometric.auth.repository.CargoRepositorio;
 import com.cherry.spike.biometric.auth.repository.UsuarioRepositorio;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +15,9 @@ import java.util.Optional;
 
 @Service
 public class UsuarioServico {
+    private static final String USUARIO_NAO_ENCONTRADO_MENSAGEM = "Usuário não encontrado!";
+    private static final String CARGO_NAO_ENCONTRADO = "Cargo não encontrado!";
+    private static final String LOGIN_REPETIDO = "o login já esta sendo utilizado por outro usuário";
 
     private final UsuarioRepositorio usuarioRepositorio;
     private final CargoRepositorio cargoRepositorio;
@@ -23,10 +28,12 @@ public class UsuarioServico {
         this.cargoRepositorio = cargoRepositorio;
         this.passwordEncoder = passwordEncoder;
     }
-
     public Optional<Usuario> salvar(UsuarioDTO usuarioDTO) {
         if(!ehCargoValido(usuarioDTO.getCargoId()))
-            throw new CargoNaoEncontradoException("Cargo não encontrado!");
+            throw new CargoNaoEncontradoException(CARGO_NAO_ENCONTRADO);
+
+        if(loginExiste(usuarioDTO.getLogin()))
+            throw new LoginInvalidoException(LOGIN_REPETIDO);
 
         String senhaCriptografada = passwordEncoder.encode(usuarioDTO.getSenha());
         Optional<Cargo> cargo = cargoRepositorio.findById(usuarioDTO.getCargoId());
@@ -40,12 +47,30 @@ public class UsuarioServico {
         return Optional.of(usuarioRepositorio.save(usuario));
     }
 
-    public Optional<Usuario> findById(long usuarioId) {
-        return usuarioRepositorio.findById(usuarioId);
+    private boolean loginExiste(String login) {
+        return usuarioRepositorio.findByLogin(login).isPresent();
     }
 
-    public Optional<Usuario> findByLogin(String login) {
-        return usuarioRepositorio.findByLogin(login);
+    public Optional<Usuario> atualizar(UsuarioDTO usuarioDTO) {
+        Optional<Usuario> usuario = usuarioRepositorio.findById(usuarioDTO.getId());
+        if(!usuario.isPresent())
+            throw new UsuarioNaoEncontradoException(USUARIO_NAO_ENCONTRADO_MENSAGEM);
+
+        if(!ehCargoValido(usuarioDTO.getCargoId()))
+            throw new CargoNaoEncontradoException(CARGO_NAO_ENCONTRADO);
+
+        String senhaCriptografada = passwordEncoder.encode(usuarioDTO.getSenha());
+        Optional<Cargo> cargo = cargoRepositorio.findById(usuarioDTO.getCargoId());
+
+        if(!usuarioDTO.getSenha().isEmpty())
+            usuario.get().setSenha(senhaCriptografada);
+
+        usuario.get().setCargo(cargo.get());
+        usuario.get().setLogin(usuarioDTO.getLogin());
+        usuario.get().setNome(usuarioDTO.getNome());
+        usuario.get().setSobrenome(usuarioDTO.getSobrenome());
+
+        return Optional.of(usuarioRepositorio.save(usuario.get()));
     }
 
     public Optional<Usuario> obterPorId(long id) {

@@ -2,6 +2,7 @@ package com.cherry.spike.biometric.auth.controller;
 
 import com.cherry.spike.biometric.auth.model.*;
 import com.cherry.spike.biometric.auth.model.dtos.UsuarioDTO;
+import com.cherry.spike.biometric.auth.model.dtos.UsuarioRespostaDTO;
 import com.cherry.spike.biometric.auth.model.entidade.Usuario;
 import com.cherry.spike.biometric.auth.model.excecoes.CargoNaoEncontradoException;
 import com.cherry.spike.biometric.auth.service.UsuarioServico;
@@ -26,8 +27,8 @@ public class UsuarioController {
     }
 
     @PostMapping(value = USUARIO, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Reposta<UsuarioDTO>> salvar(@RequestBody UsuarioDTO usuarioDTO, BindingResult result) {
-        Reposta<UsuarioDTO> reposta = new Reposta<>();
+    public ResponseEntity<Reposta<UsuarioRespostaDTO>> salvar(@RequestBody UsuarioDTO usuarioDTO, BindingResult result) {
+        Reposta<UsuarioRespostaDTO> reposta = new Reposta<>();
         if (result.hasErrors()) {
             result.getAllErrors().forEach(error
                     -> reposta.adicionarMensagemErro(error.getDefaultMessage()));
@@ -36,41 +37,71 @@ public class UsuarioController {
         try {
             Optional<Usuario> usuario = usuarioServico.salvar(usuarioDTO);
             if (!usuario.isPresent()){
-                reposta.setConteudo(new UsuarioDTO());
+                reposta.setConteudo(new UsuarioRespostaDTO());
                 new ResponseEntity<>(reposta, HttpStatus.BAD_REQUEST);
             }
 
-            UsuarioDTO repostaDTO = UsuarioDTO.converterEntidadeParaDTO(usuario.get());
+            UsuarioRespostaDTO repostaDTO = UsuarioRespostaDTO.converterEntidadeParaDTO(usuario.get());
             reposta.setConteudo(repostaDTO);
             return new ResponseEntity<>(reposta, HttpStatus.CREATED);
         }catch (CargoNaoEncontradoException naoEncontrado){
             reposta.adicionarMensagemErro(naoEncontrado.getMessage());
-            reposta.setConteudo(new UsuarioDTO());
+            reposta.setConteudo(new UsuarioRespostaDTO());
             return new ResponseEntity<>(reposta, HttpStatus.NOT_FOUND);
         }catch (Exception e){
             reposta.adicionarMensagemErro(e.getMessage());
-            reposta.setConteudo(new UsuarioDTO());
+            reposta.setConteudo(new UsuarioRespostaDTO());
+            return new ResponseEntity<>(reposta, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PutMapping(value = USUARIO, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Reposta<UsuarioRespostaDTO>> atualizar (@RequestBody UsuarioDTO usuarioDTO, BindingResult result) {
+        Reposta<UsuarioRespostaDTO> reposta = new Reposta<>();
+        if (result.hasErrors()) {
+            result.getAllErrors().forEach(error
+                    -> reposta.adicionarMensagemErro(error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(reposta);
+        }
+        try {
+            Optional<Usuario> usuario = usuarioServico.atualizar(usuarioDTO);
+            if (!usuario.isPresent()){
+                reposta.setConteudo(new UsuarioRespostaDTO());
+                new ResponseEntity<>(reposta, HttpStatus.BAD_REQUEST);
+            }
+
+            UsuarioRespostaDTO repostaDTO = UsuarioRespostaDTO.converterEntidadeParaDTO(usuario.get());
+            reposta.setConteudo(repostaDTO);
+            return new ResponseEntity<>(reposta, HttpStatus.CREATED);
+        }catch (CargoNaoEncontradoException naoEncontrado){
+            reposta.adicionarMensagemErro(naoEncontrado.getMessage());
+            reposta.setConteudo(new UsuarioRespostaDTO());
+            return new ResponseEntity<>(reposta, HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            reposta.adicionarMensagemErro(e.getMessage());
+            reposta.setConteudo(new UsuarioRespostaDTO());
             return new ResponseEntity<>(reposta, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Secured("ROLE_ADMIN")
     @GetMapping(value = USUARIO_POR_ID, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Reposta<UsuarioDTO>> obterPorId(@PathVariable("id") long id) {
-        Reposta<UsuarioDTO> reposta = new Reposta<>();
+    public ResponseEntity<Reposta<UsuarioRespostaDTO>> obterPorId(@PathVariable("id") long id) {
+        Reposta<UsuarioRespostaDTO> reposta = new Reposta<>();
         try {
             Optional<Usuario> usuario = usuarioServico.obterPorId(id);
             if (!usuario.isPresent()){
-                reposta.setConteudo(new UsuarioDTO());
+                reposta.setConteudo(new UsuarioRespostaDTO());
                 new ResponseEntity<>(reposta, HttpStatus.BAD_REQUEST);
             }
 
-            UsuarioDTO responseDTO = UsuarioDTO.converterEntidadeParaDTO(usuario.get());
+            UsuarioRespostaDTO responseDTO = UsuarioRespostaDTO.converterEntidadeParaDTO(usuario.get());
             reposta.setConteudo(responseDTO);
             return new ResponseEntity<>(reposta, HttpStatus.CREATED);
         }catch (Exception e){
             reposta.adicionarMensagemErro(e.getMessage());
-            reposta.setConteudo(new UsuarioDTO());
+            reposta.setConteudo(new UsuarioRespostaDTO());
             return new ResponseEntity<>(reposta, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

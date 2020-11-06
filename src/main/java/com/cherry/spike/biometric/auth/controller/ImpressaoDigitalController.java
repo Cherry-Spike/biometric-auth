@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1")
+@CrossOrigin(origins = "http://localhost:8080")
 public class ImpressaoDigitalController {
     private final ImpressaoDigitalServico impressaoDigitalServico;
     private final static String IMPRESSAO_DIGITAL = "/impressaoDigital";

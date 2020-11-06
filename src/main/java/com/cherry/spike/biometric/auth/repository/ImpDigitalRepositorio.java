@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ImpDigitalRepositorio  extends JpaRepository<ImpressaoDigital, Long> {
-    Optional<ImpressaoDigital> findByUsuario(Usuario usuario);
+    Optional<ImpressaoDigital> findByUsuarioId(long usuarioId);
 }
