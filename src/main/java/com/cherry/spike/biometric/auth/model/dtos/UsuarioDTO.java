@@ -1,8 +1,6 @@
 package com.cherry.spike.biometric.auth.model.dtos;
 
-import com.cherry.spike.biometric.auth.model.entidade.Usuario;
 import lombok.*;
-import org.modelmapper.ModelMapper;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,9 +13,4 @@ public class UsuarioDTO {
     private long cargoId;
     private String login;
     private String senha;
-
-    public static Usuario converterDTOparaEntidade(UsuarioDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(dto, Usuario.class);
-    }
 }

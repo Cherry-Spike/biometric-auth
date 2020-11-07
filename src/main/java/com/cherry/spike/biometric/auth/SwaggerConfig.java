@@ -56,8 +56,8 @@ public class SwaggerConfig {
                 "Biometric Auth",
                 "1.0",
                 "Terms of Service",
-                new Contact("Everton Ferreira - D7554H9", "teste",
-                        "teste@gmail.com"),
+                new Contact("Cherry Spike", "https://github.com/Cherry-Spike/biometric-auth-api/wiki/Proposta",
+                        "cherry.spike@gmail.com"),
                 "Apache License Version 2.0",
                 "https://www.apache.org/licesen.html", new ArrayList<VendorExtension>()
         );

@@ -8,17 +8,16 @@ import lombok.Setter;
 import javax.persistence.*;
 
 
-@Entity(name = "tbl_Nivel")
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter @Setter
 public class Nivel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID_Nivel", nullable=false)
-    @Getter @Setter
     private long id;
     @Column(name="Descricao", nullable=false)
-    @Getter @Setter
     private String descricao;
 }
 

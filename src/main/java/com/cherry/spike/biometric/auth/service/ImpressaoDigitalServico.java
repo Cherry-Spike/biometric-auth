@@ -1,5 +1,8 @@
 package com.cherry.spike.biometric.auth.service;
 
+import com.cherry.spike.biometric.auth.model.entidade.Cargo;
+import com.cherry.spike.biometric.auth.model.excecoes.CargoNaoEncontradoException;
+import com.cherry.spike.biometric.auth.model.excecoes.ImpressaoDigitaLNaoEncontradaException;
 import com.cherry.spike.biometric.auth.model.excecoes.UsuarioNaoEncontradoException;
 import com.cherry.spike.biometric.auth.model.entidade.ImpressaoDigital;
 import com.cherry.spike.biometric.auth.model.entidade.Usuario;
@@ -21,7 +24,8 @@ import java.util.Optional;
 public class ImpressaoDigitalServico {
     private static final String USUARIO_NAO_ENCONTRADO_MENSAGEM = "Usuário não encontrado!";
     private static final double MINIMO_PERCENTUAL = 40;
-    private static final String USUARIO_JA_POSSUI_IMPDIGITAL_MENSAGEM = "Usuário já possui uma impressão digital!";
+    private static final String USUARIO_JA_POSSUI_IMPDIGITAL_MENSAGEM = "Usuário já possui impressão digital!";
+    private static final String USUARIO_NAO_POSSUI_IMPDIGITAL_MENSAGEM = "Usuário não possui impressão digital!";
     private final ImpDigitalRepositorio impDigitalRepositorio;
     private final UsuarioRepositorio usuarioRepositorio;
 
@@ -45,10 +49,6 @@ public class ImpressaoDigitalServico {
             arquivoDb = ImpressaoDigital.novo(nomeArquivo, arquivo.getContentType(), arquivo.getBytes(), usuario.get());
 
         return Optional.of(impDigitalRepositorio.save(arquivoDb));
-    }
-
-    private boolean usuarioPossuiImpDigital(long usuarioId) {
-        return impDigitalRepositorio.findByUsuarioId(usuarioId).isPresent();
     }
 
     private boolean ehUsuarioValido(long usuarioId) {
@@ -81,5 +81,21 @@ public class ImpressaoDigitalServico {
             throw new IOException("Erro ao ler arquivo "+e.getMessage());
         }
         return porcentagem >= MINIMO_PERCENTUAL;
+    }
+
+    public Optional<ImpressaoDigital> atualizar(MultipartFile arquivo, long usuarioId) throws IOException {
+        Optional<ImpressaoDigital> impDigital = impDigitalRepositorio.findByUsuarioId(usuarioId);
+        if(!impDigital.isPresent())
+            throw new ImpressaoDigitaLNaoEncontradaException(USUARIO_NAO_POSSUI_IMPDIGITAL_MENSAGEM);
+
+        impDigital.get().setConteudo(arquivo.getBytes());
+        impDigital.get().setNome(arquivo.getName());
+        impDigital.get().setTipoArquivo(arquivo.getContentType());
+
+        return Optional.of(impDigitalRepositorio.save(impDigital.get()));
+    }
+
+    private boolean usuarioPossuiImpDigital(long usuarioId) {
+        return impDigitalRepositorio.findByUsuarioId(usuarioId).isPresent();
     }
 }

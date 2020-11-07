@@ -2,11 +2,13 @@ package com.cherry.spike.biometric.auth.service;
 
 import com.cherry.spike.biometric.auth.model.dtos.UsuarioDTO;
 import com.cherry.spike.biometric.auth.model.entidade.Cargo;
+import com.cherry.spike.biometric.auth.model.entidade.ImpressaoDigital;
 import com.cherry.spike.biometric.auth.model.excecoes.CargoNaoEncontradoException;
 import com.cherry.spike.biometric.auth.model.entidade.Usuario;
 import com.cherry.spike.biometric.auth.model.excecoes.LoginInvalidoException;
 import com.cherry.spike.biometric.auth.model.excecoes.UsuarioNaoEncontradoException;
 import com.cherry.spike.biometric.auth.repository.CargoRepositorio;
+import com.cherry.spike.biometric.auth.repository.ImpDigitalRepositorio;
 import com.cherry.spike.biometric.auth.repository.UsuarioRepositorio;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,11 +22,13 @@ public class UsuarioServico {
     private static final String LOGIN_REPETIDO = "o login já esta sendo utilizado por outro usuário";
 
     private final UsuarioRepositorio usuarioRepositorio;
+    private final ImpDigitalRepositorio impDigitalRepositorio;
     private final CargoRepositorio cargoRepositorio;
     private final PasswordEncoder passwordEncoder;
 
-    public UsuarioServico(UsuarioRepositorio usuarioRepositorio, CargoRepositorio cargoRepositorio, PasswordEncoder passwordEncoder) {
+    public UsuarioServico(UsuarioRepositorio usuarioRepositorio, ImpDigitalRepositorio impDigitalRepositorio, CargoRepositorio cargoRepositorio, PasswordEncoder passwordEncoder) {
         this.usuarioRepositorio = usuarioRepositorio;
+        this.impDigitalRepositorio = impDigitalRepositorio;
         this.cargoRepositorio = cargoRepositorio;
         this.passwordEncoder = passwordEncoder;
     }
@@ -83,5 +87,17 @@ public class UsuarioServico {
     private boolean ehCargoValido(long cargoId) {
         Optional<Cargo> cargo = cargoRepositorio.findById(cargoId);
         return cargo.isPresent();
+    }
+
+    public void delete(long id) {
+        Optional<Usuario> usuario = usuarioRepositorio.findById(id);
+        if(!usuario.isPresent())
+            throw new UsuarioNaoEncontradoException(USUARIO_NAO_ENCONTRADO_MENSAGEM);
+
+        Optional<ImpressaoDigital> impressaoDigital = impDigitalRepositorio.findByUsuarioId(id);
+        if(impressaoDigital.isPresent())
+            impDigitalRepositorio.delete(impressaoDigital.get());
+
+        usuarioRepositorio.delete(usuario.get());
     }
 }

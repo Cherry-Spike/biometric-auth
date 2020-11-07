@@ -5,6 +5,7 @@ import com.cherry.spike.biometric.auth.model.dtos.UsuarioDTO;
 import com.cherry.spike.biometric.auth.model.dtos.UsuarioRespostaDTO;
 import com.cherry.spike.biometric.auth.model.entidade.Usuario;
 import com.cherry.spike.biometric.auth.model.excecoes.CargoNaoEncontradoException;
+import com.cherry.spike.biometric.auth.model.excecoes.UsuarioNaoEncontradoException;
 import com.cherry.spike.biometric.auth.service.UsuarioServico;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1")
+@CrossOrigin(origins = "http://localhost:8080")
 public class UsuarioController {
     private static final String USUARIO = "/usuario";
     private static final String USUARIO_POR_ID = USUARIO + "/{id}";
@@ -73,7 +75,7 @@ public class UsuarioController {
 
             UsuarioRespostaDTO repostaDTO = UsuarioRespostaDTO.converterEntidadeParaDTO(usuario.get());
             reposta.setConteudo(repostaDTO);
-            return new ResponseEntity<>(reposta, HttpStatus.CREATED);
+            return new ResponseEntity<>(reposta, HttpStatus.OK);
         }catch (CargoNaoEncontradoException naoEncontrado){
             reposta.adicionarMensagemErro(naoEncontrado.getMessage());
             reposta.setConteudo(new UsuarioRespostaDTO());
@@ -98,10 +100,30 @@ public class UsuarioController {
 
             UsuarioRespostaDTO responseDTO = UsuarioRespostaDTO.converterEntidadeParaDTO(usuario.get());
             reposta.setConteudo(responseDTO);
-            return new ResponseEntity<>(reposta, HttpStatus.CREATED);
+            return new ResponseEntity<>(reposta, HttpStatus.OK);
+        }catch (UsuarioNaoEncontradoException naoEncontrado){
+            reposta.adicionarMensagemErro(naoEncontrado.getMessage());
+            return new ResponseEntity<>(reposta, HttpStatus.NOT_FOUND);
         }catch (Exception e){
             reposta.adicionarMensagemErro(e.getMessage());
             reposta.setConteudo(new UsuarioRespostaDTO());
+            return new ResponseEntity<>(reposta, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+//    @Secured("ROLE_ADMIN")
+    @DeleteMapping(value = USUARIO_POR_ID, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Reposta<Boolean>> delete(@PathVariable("id") long id) {
+        Reposta<Boolean> reposta = new Reposta<>();
+        try {
+            usuarioServico.delete(id);
+            reposta.setConteudo(true);
+            return new ResponseEntity<>(reposta, HttpStatus.OK);
+        }catch (UsuarioNaoEncontradoException naoEncontrado){
+            reposta.adicionarMensagemErro(naoEncontrado.getMessage());
+            return new ResponseEntity<>(reposta, HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            reposta.adicionarMensagemErro(e.getMessage());
             return new ResponseEntity<>(reposta, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
