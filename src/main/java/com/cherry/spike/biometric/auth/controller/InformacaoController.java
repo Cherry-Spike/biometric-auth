@@ -36,6 +36,7 @@ public class InformacaoController {
         this.informacaoServico = informacaoServico;
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping(value = INFORMACAO, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<InformacaoRespostaDTO>> salvar(@RequestBody InformacaoDTO informacaoDTO, BindingResult result) {
         Reposta<InformacaoRespostaDTO> reposta = new Reposta<>();
@@ -64,7 +65,7 @@ public class InformacaoController {
         }
     }
 
-//    @Secured("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @GetMapping(value = INFORMACAO_POR_USUARIO, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<List<InformacaoRespostaDTO>>> obterPorUsuarioId(@PathVariable("usuarioId") long usuarioId) {
         Reposta<List<InformacaoRespostaDTO>> reposta = new Reposta<>();

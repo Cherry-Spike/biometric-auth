@@ -28,6 +28,7 @@ public class UsuarioController {
         this.usuarioServico = usuarioServico;
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping(value = USUARIO, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<UsuarioRespostaDTO>> salvar(@RequestBody UsuarioDTO usuarioDTO, BindingResult result) {
         Reposta<UsuarioRespostaDTO> reposta = new Reposta<>();
@@ -111,7 +112,7 @@ public class UsuarioController {
         }
     }
 
-//    @Secured("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(value = USUARIO_POR_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<Boolean>> delete(@PathVariable("id") long id) {
         Reposta<Boolean> reposta = new Reposta<>();

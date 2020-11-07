@@ -8,6 +8,7 @@ import com.cherry.spike.biometric.auth.service.ImpressaoDigitalServico;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +29,7 @@ public class ImpressaoDigitalController {
         this.impressaoDigitalServico = impressaoDigitalServico;
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping(value = SALVAR_DIGITAL, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<ImpressaoDigitalRespostaDTO>> salvar(@RequestParam(ARQUIVO) MultipartFile arquivo, @PathVariable(USUARIO_ID) long usuarioId) {
         Reposta<ImpressaoDigitalRespostaDTO> resposta = new Reposta<>();
@@ -56,6 +58,7 @@ public class ImpressaoDigitalController {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping(value = SALVAR_DIGITAL, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<ImpressaoDigitalRespostaDTO>> atualizar (@RequestParam(ARQUIVO) MultipartFile arquivo, @PathVariable(USUARIO_ID) long usuarioId) {
         Reposta<ImpressaoDigitalRespostaDTO> resposta = new Reposta<>();
