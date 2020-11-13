@@ -42,7 +42,7 @@ public class UsuarioServico {
         String senhaCriptografada = passwordEncoder.encode(usuarioDTO.getSenha());
         Optional<Cargo> cargo = cargoRepositorio.findById(usuarioDTO.getCargoId());
 
-        if(!cargo.isPresent() && senhaCriptografada.isBlank())
+        if(!cargo.isPresent() && senhaCriptografada.isEmpty())
             return Optional.empty();
 
         Usuario usuario = Usuario
