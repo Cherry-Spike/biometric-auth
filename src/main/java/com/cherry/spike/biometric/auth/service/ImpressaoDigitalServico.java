@@ -55,12 +55,18 @@ public class ImpressaoDigitalServico {
         return usuarioRepositorio.findById(usuarioId).isPresent();
     }
 
+    private boolean ehUsuarioValido(String login) {
+        Optional<Usuario> usuario = usuarioRepositorio.findByLogin(login);
+        return usuario.isPresent();
+    }
+
     public boolean ehDigitalValida(String login, MultipartFile arquivo) throws IOException {
         double porcentagem = 0;
         try{
+            if (!ehUsuarioValido(login))
+                throw new UsuarioNaoEncontradoException("Usuario não encontrado");
+
             Optional<Usuario> usuario = usuarioRepositorio.findByLogin(login);
-            if (!usuario.isPresent())
-                throw new UsuarioNaoEncontradoException(MessageFormat.format("Usuario com login {1}, não encontrado",login));
             Optional<ImpressaoDigital> impressaoDigital = impDigitalRepositorio.findByUsuarioId(usuario.get().getId());
 
             FingerprintTemplate impressaoDigitalBd = new FingerprintTemplate(

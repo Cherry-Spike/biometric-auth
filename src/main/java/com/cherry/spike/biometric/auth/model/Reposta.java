@@ -15,14 +15,14 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Reposta<T> {
 
-    private T conteudo;
-    private Object erros;
+    private T data;
+    private Object error;
 
     public void adicionarMensagemErro(String msgError) {
         RespostaComErro error = new RespostaComErro()
-                .setDetalhes(msgError)
-                .setHorario(LocalDateTime.now());
-        setErros(error);
+                .setMessage(msgError)
+                .setTimestamp(LocalDateTime.now());
+        setError(error);
     }
 
     @Getter
@@ -32,9 +32,9 @@ public class Reposta<T> {
     public class RespostaComErro {
 
         @NotNull(message="Horário não pode ser nulo")
-        private LocalDateTime horario;
+        private LocalDateTime timestamp;
 
         @NotNull(message="Detalhes não pode ser nulo")
-        private String detalhes;
+        private String message;
     }
 }

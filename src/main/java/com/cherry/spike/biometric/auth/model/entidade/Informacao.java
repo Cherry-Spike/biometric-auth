@@ -14,8 +14,8 @@ public class Informacao {
     @Column(name="ID_Informacao", nullable=false)
     private long id;
     @NonNull
-    @Column(name="Descricao", nullable=false)
-    private String descricao;
+    @Column(name="Risco", nullable=false)
+    private String risco;
     @NonNull
     @OneToOne(optional = false)
     @JoinColumn(name = "Nivel_ID")

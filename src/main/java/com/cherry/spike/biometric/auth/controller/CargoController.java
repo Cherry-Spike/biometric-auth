@@ -29,7 +29,7 @@ public class CargoController {
         Reposta<List<Cargo>> reposta = new Reposta<>();
         try {
             List<Cargo> cargos = cargoServico.obterTodos();
-            reposta.setConteudo(cargos);
+            reposta.setData(cargos);
             return new ResponseEntity<>(reposta, HttpStatus.OK);
         }catch (UsuarioNaoEncontradoException naoEncontrado){
             reposta.adicionarMensagemErro(naoEncontrado.getMessage());

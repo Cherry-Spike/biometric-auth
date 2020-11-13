@@ -28,7 +28,7 @@ public class BiometricAuthApplication {
 	}
 	private static final int MAX_REQUEST_SIZE_IN_MB = 150;
 
-	@Bean
+//	@Bean
 	public CommandLineRunner demo(UsuarioServico usuarioServico, CargoRepositorio cargoRepositorio, ImpDigitalRepositorio impDigitalRepositorio, NivelRepositorio nivelRepositorio) {
 		return (args) -> {
 			log.info("-------------------------------");
@@ -43,7 +43,7 @@ public class BiometricAuthApplication {
 			diretor.setNivel(administrador);
 			cargoRepositorio.save(diretor);
 			log.info("Usuario");
-			UsuarioDTO usuario = new UsuarioDTO(0, "Everton", "Ferreira", diretor.getId(), "everton42", "123");
+			UsuarioDTO usuario = new UsuarioDTO(0, "Everton", "Ferreira", diretor.getId(), "everton42", "12345678");
 			usuarioServico.salvar(usuario);
 			log.info("Finalizado");
 			log.info("-------------------------------");
@@ -63,7 +63,7 @@ public class BiometricAuthApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://localhost:8080");
+				registry.addMapping("/**");
 			}
 		};
 	}

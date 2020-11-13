@@ -48,19 +48,19 @@ public class InformacaoController {
         try {
             Optional<Informacao> informacao = informacaoServico.salvar(informacaoDTO);
             if (!informacao.isPresent()){
-                reposta.setConteudo(new InformacaoRespostaDTO());
+                reposta.setData(new InformacaoRespostaDTO());
                 new ResponseEntity<>(reposta, HttpStatus.BAD_REQUEST);
             }
             InformacaoRespostaDTO repostaDTO = InformacaoRespostaDTO.converterEntidadeParaDTO(informacao.get());
-            reposta.setConteudo(repostaDTO);
+            reposta.setData(repostaDTO);
             return new ResponseEntity<>(reposta, HttpStatus.CREATED);
         }catch (NivelInvalidoException naoEncontrado){
             reposta.adicionarMensagemErro(naoEncontrado.getMessage());
-            reposta.setConteudo(new InformacaoRespostaDTO());
+            reposta.setData(new InformacaoRespostaDTO());
             return new ResponseEntity<>(reposta, HttpStatus.NOT_FOUND);
         }catch (Exception e){
             reposta.adicionarMensagemErro(e.getMessage());
-            reposta.setConteudo(new InformacaoRespostaDTO());
+            reposta.setData(new InformacaoRespostaDTO());
             return new ResponseEntity<>(reposta, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -78,7 +78,7 @@ public class InformacaoController {
                     .stream().map(informacao ->
                     InformacaoRespostaDTO.converterEntidadeParaDTO(informacao)).collect(Collectors.toList());
 
-            reposta.setConteudo(infos);
+            reposta.setData(infos);
             return new ResponseEntity<>(reposta, HttpStatus.OK);
         }catch (UsuarioNaoEncontradoException naoEncontrado){
             reposta.adicionarMensagemErro(naoEncontrado.getMessage());

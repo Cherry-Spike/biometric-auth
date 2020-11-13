@@ -1,5 +1,6 @@
 package com.cherry.spike.biometric.auth.controller;
 
+import com.cherry.spike.biometric.auth.model.JwtResponse;
 import com.cherry.spike.biometric.auth.model.Reposta;
 import com.cherry.spike.biometric.auth.model.excecoes.UsuarioNaoEncontradoException;
 import com.cherry.spike.biometric.auth.security.config.JwtTokenServico;
@@ -38,15 +39,17 @@ public class JwtTokenController {
 
     @PostMapping(value = AUTENTICACAO)
     public ResponseEntity<?> Autenticacao(@RequestParam(ARQUIVO) MultipartFile arquivo, @RequestParam(LOGIN) String login, @RequestParam(SENHA) String senha) {
-        Reposta<String> resposta = new Reposta<>();
+        Reposta<JwtResponse> resposta = new Reposta<>();
         try {
             boolean ehValida = impressaoDigitalServico.ehDigitalValida(login, arquivo);
             if (!ehValida) {
+                resposta.adicionarMensagemErro("Digital inválida");
                 return new ResponseEntity<>(resposta, HttpStatus.NOT_FOUND);
             }
             final Authentication auth = autenticar(login, senha);
             SecurityContextHolder.getContext().setAuthentication(auth);
-            resposta.setConteudo(jwtTokenUtil.gerarToken(auth));
+
+            resposta.setData(new JwtResponse(jwtTokenUtil.gerarToken(auth)));
             return new ResponseEntity<>(resposta, HttpStatus.OK);
         } catch (UsuarioNaoEncontradoException naoEncontrado) {
             resposta.adicionarMensagemErro(naoEncontrado.getMessage());
@@ -64,9 +67,9 @@ public class JwtTokenController {
         try {
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, senha));
         } catch (DisabledException e) {
-            throw new Exception("Usuário desabilitado" + e.getMessage());
+            throw new Exception("Usuário desabilitado");
         } catch (BadCredentialsException e) {
-            throw new Exception("Credencial inválida"+ e.getMessage());
+            throw new Exception("Senha inválida");
         }
     }
 }

@@ -40,20 +40,20 @@ public class UsuarioController {
         try {
             Optional<Usuario> usuario = usuarioServico.salvar(usuarioDTO);
             if (!usuario.isPresent()){
-                reposta.setConteudo(new UsuarioRespostaDTO());
+                reposta.setData(new UsuarioRespostaDTO());
                 new ResponseEntity<>(reposta, HttpStatus.BAD_REQUEST);
             }
 
             UsuarioRespostaDTO repostaDTO = UsuarioRespostaDTO.converterEntidadeParaDTO(usuario.get());
-            reposta.setConteudo(repostaDTO);
+            reposta.setData(repostaDTO);
             return new ResponseEntity<>(reposta, HttpStatus.CREATED);
         }catch (CargoNaoEncontradoException naoEncontrado){
             reposta.adicionarMensagemErro(naoEncontrado.getMessage());
-            reposta.setConteudo(new UsuarioRespostaDTO());
+            reposta.setData(new UsuarioRespostaDTO());
             return new ResponseEntity<>(reposta, HttpStatus.NOT_FOUND);
         }catch (Exception e){
             reposta.adicionarMensagemErro(e.getMessage());
-            reposta.setConteudo(new UsuarioRespostaDTO());
+            reposta.setData(new UsuarioRespostaDTO());
             return new ResponseEntity<>(reposta, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -70,20 +70,20 @@ public class UsuarioController {
         try {
             Optional<Usuario> usuario = usuarioServico.atualizar(usuarioDTO);
             if (!usuario.isPresent()){
-                reposta.setConteudo(new UsuarioRespostaDTO());
+                reposta.setData(new UsuarioRespostaDTO());
                 new ResponseEntity<>(reposta, HttpStatus.BAD_REQUEST);
             }
 
             UsuarioRespostaDTO repostaDTO = UsuarioRespostaDTO.converterEntidadeParaDTO(usuario.get());
-            reposta.setConteudo(repostaDTO);
+            reposta.setData(repostaDTO);
             return new ResponseEntity<>(reposta, HttpStatus.OK);
         }catch (CargoNaoEncontradoException naoEncontrado){
             reposta.adicionarMensagemErro(naoEncontrado.getMessage());
-            reposta.setConteudo(new UsuarioRespostaDTO());
+            reposta.setData(new UsuarioRespostaDTO());
             return new ResponseEntity<>(reposta, HttpStatus.NOT_FOUND);
         }catch (Exception e){
             reposta.adicionarMensagemErro(e.getMessage());
-            reposta.setConteudo(new UsuarioRespostaDTO());
+            reposta.setData(new UsuarioRespostaDTO());
             return new ResponseEntity<>(reposta, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -95,19 +95,19 @@ public class UsuarioController {
         try {
             Optional<Usuario> usuario = usuarioServico.obterPorId(id);
             if (!usuario.isPresent()){
-                reposta.setConteudo(new UsuarioRespostaDTO());
+                reposta.setData(new UsuarioRespostaDTO());
                 new ResponseEntity<>(reposta, HttpStatus.BAD_REQUEST);
             }
 
             UsuarioRespostaDTO responseDTO = UsuarioRespostaDTO.converterEntidadeParaDTO(usuario.get());
-            reposta.setConteudo(responseDTO);
+            reposta.setData(responseDTO);
             return new ResponseEntity<>(reposta, HttpStatus.OK);
         }catch (UsuarioNaoEncontradoException naoEncontrado){
             reposta.adicionarMensagemErro(naoEncontrado.getMessage());
             return new ResponseEntity<>(reposta, HttpStatus.NOT_FOUND);
         }catch (Exception e){
             reposta.adicionarMensagemErro(e.getMessage());
-            reposta.setConteudo(new UsuarioRespostaDTO());
+            reposta.setData(new UsuarioRespostaDTO());
             return new ResponseEntity<>(reposta, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -118,7 +118,7 @@ public class UsuarioController {
         Reposta<Boolean> reposta = new Reposta<>();
         try {
             usuarioServico.delete(id);
-            reposta.setConteudo(true);
+            reposta.setData(true);
             return new ResponseEntity<>(reposta, HttpStatus.OK);
         }catch (UsuarioNaoEncontradoException naoEncontrado){
             reposta.adicionarMensagemErro(naoEncontrado.getMessage());

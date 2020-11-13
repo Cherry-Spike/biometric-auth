@@ -36,24 +36,24 @@ public class ImpressaoDigitalController {
         try {
             Optional<ImpressaoDigital> impressaoDigital = impressaoDigitalServico.salvar(arquivo, usuarioId);
             if (!impressaoDigital.isPresent()){
-                resposta.setConteudo(new ImpressaoDigitalRespostaDTO());
+                resposta.setData(new ImpressaoDigitalRespostaDTO());
                 new ResponseEntity<>(resposta, HttpStatus.BAD_REQUEST);
             }
             ImpressaoDigitalRespostaDTO repostaDTO = ImpressaoDigitalRespostaDTO.converterEntidadeParaDTO(impressaoDigital.get());
-            resposta.setConteudo(repostaDTO);
+            resposta.setData(repostaDTO);
             return new ResponseEntity<>(resposta, HttpStatus.CREATED);
         }catch (UsuarioNaoEncontradoException naoEncontrado){
             resposta.adicionarMensagemErro(naoEncontrado.getMessage());
-            resposta.setConteudo(new ImpressaoDigitalRespostaDTO());
+            resposta.setData(new ImpressaoDigitalRespostaDTO());
             return new ResponseEntity<>(resposta, HttpStatus.NOT_FOUND);
         }catch (IOException erroArquivo) {
             resposta.adicionarMensagemErro(erroArquivo.getMessage());
-            resposta.setConteudo(new ImpressaoDigitalRespostaDTO());
+            resposta.setData(new ImpressaoDigitalRespostaDTO());
             return new ResponseEntity<>(resposta, HttpStatus.BAD_REQUEST);
         }
         catch (Exception e){
             resposta.adicionarMensagemErro(e.getMessage());
-            resposta.setConteudo(new ImpressaoDigitalRespostaDTO());
+            resposta.setData(new ImpressaoDigitalRespostaDTO());
             return new ResponseEntity<>(resposta, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -65,24 +65,24 @@ public class ImpressaoDigitalController {
         try {
             Optional<ImpressaoDigital> impressaoDigital = impressaoDigitalServico.atualizar(arquivo, usuarioId);
             if (!impressaoDigital.isPresent()){
-                resposta.setConteudo(new ImpressaoDigitalRespostaDTO());
+                resposta.setData(new ImpressaoDigitalRespostaDTO());
                 new ResponseEntity<>(resposta, HttpStatus.BAD_REQUEST);
             }
             ImpressaoDigitalRespostaDTO repostaDTO = ImpressaoDigitalRespostaDTO.converterEntidadeParaDTO(impressaoDigital.get());
-            resposta.setConteudo(repostaDTO);
+            resposta.setData(repostaDTO);
             return new ResponseEntity<>(resposta, HttpStatus.OK);
         }catch (UsuarioNaoEncontradoException naoEncontrado){
             resposta.adicionarMensagemErro(naoEncontrado.getMessage());
-            resposta.setConteudo(new ImpressaoDigitalRespostaDTO());
+            resposta.setData(new ImpressaoDigitalRespostaDTO());
             return new ResponseEntity<>(resposta, HttpStatus.NOT_FOUND);
         }catch (IOException erroArquivo){
             resposta.adicionarMensagemErro(erroArquivo.getMessage());
-            resposta.setConteudo(new ImpressaoDigitalRespostaDTO());
+            resposta.setData(new ImpressaoDigitalRespostaDTO());
             return new ResponseEntity<>(resposta, HttpStatus.BAD_REQUEST);
         }
         catch (Exception e){
             resposta.adicionarMensagemErro(e.getMessage());
-            resposta.setConteudo(new ImpressaoDigitalRespostaDTO());
+            resposta.setData(new ImpressaoDigitalRespostaDTO());
             return new ResponseEntity<>(resposta, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
