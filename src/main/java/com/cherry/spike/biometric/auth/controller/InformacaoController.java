@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1")
-@CrossOrigin(origins = "http://localhost:8080")
 public class InformacaoController {
     private static final String INFORMACAO = "/informacao";
     private static final String INFORMACAO_POR_USUARIO = INFORMACAO + "/{usuarioId}";

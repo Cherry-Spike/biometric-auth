@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter @Setter
 public class ImpressaoDigital {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID_Digital")
     private long id;
     @NonNull

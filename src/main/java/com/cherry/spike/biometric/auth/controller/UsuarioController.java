@@ -14,14 +14,17 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1")
-@CrossOrigin(origins = "http://localhost:8080")
 public class UsuarioController {
     private static final String USUARIO = "/usuario";
     private static final String USUARIO_POR_ID = USUARIO + "/{id}";
+    private static final String USUARIO_POR_LOGIN = USUARIO + "/{login}";
     private final UsuarioServico usuarioServico;
 
     public UsuarioController(UsuarioServico usuarioServico) {
@@ -113,13 +116,64 @@ public class UsuarioController {
     }
 
     @Secured("ROLE_ADMIN")
+    @GetMapping(value = USUARIO_POR_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Reposta<UsuarioRespostaDTO>> obterPorLogin(@RequestParam("login") String login) {
+        Reposta<UsuarioRespostaDTO> reposta = new Reposta<>();
+        try {
+            Optional<Usuario> usuario = usuarioServico.obterPorLogin(login);
+            if (!usuario.isPresent()){
+                reposta.setData(new UsuarioRespostaDTO());
+                new ResponseEntity<>(reposta, HttpStatus.BAD_REQUEST);
+            }
+
+            UsuarioRespostaDTO responseDTO = UsuarioRespostaDTO.converterEntidadeParaDTO(usuario.get());
+            reposta.setData(responseDTO);
+            return new ResponseEntity<>(reposta, HttpStatus.OK);
+        }catch (UsuarioNaoEncontradoException naoEncontrado){
+            reposta.adicionarMensagemErro(naoEncontrado.getMessage());
+            return new ResponseEntity<>(reposta, HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            reposta.adicionarMensagemErro(e.getMessage());
+            reposta.setData(new UsuarioRespostaDTO());
+            return new ResponseEntity<>(reposta, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping(value = USUARIO, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Reposta<List<UsuarioRespostaDTO>>> obterTodos() {
+        Reposta<List<UsuarioRespostaDTO>> reposta = new Reposta<>();
+        try {
+            List<Usuario> usuarios = usuarioServico.obterTodos();
+
+            List<UsuarioRespostaDTO> responseDTO;
+            if(!usuarios.isEmpty()){
+                responseDTO = usuarios.stream()
+                        .map(usuario -> UsuarioRespostaDTO.converterEntidadeParaDTO(usuario))
+                        .collect(Collectors.toList());
+            }
+            else
+                responseDTO = Collections.EMPTY_LIST;
+
+            reposta.setData(responseDTO);
+            return new ResponseEntity<>(reposta, HttpStatus.OK);
+        }catch (UsuarioNaoEncontradoException naoEncontrado){
+            reposta.adicionarMensagemErro(naoEncontrado.getMessage());
+            return new ResponseEntity<>(reposta, HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            reposta.adicionarMensagemErro(e.getMessage());
+            return new ResponseEntity<>(reposta, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(value = USUARIO_POR_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<Boolean>> delete(@PathVariable("id") long id) {
         Reposta<Boolean> reposta = new Reposta<>();
         try {
             usuarioServico.delete(id);
             reposta.setData(true);
-            return new ResponseEntity<>(reposta, HttpStatus.OK);
+            return new ResponseEntity<>(reposta, HttpStatus.NO_CONTENT);
         }catch (UsuarioNaoEncontradoException naoEncontrado){
             reposta.adicionarMensagemErro(naoEncontrado.getMessage());
             return new ResponseEntity<>(reposta, HttpStatus.NOT_FOUND);

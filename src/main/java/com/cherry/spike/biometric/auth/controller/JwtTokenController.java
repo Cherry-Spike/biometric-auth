@@ -20,7 +20,6 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/v1")
-@CrossOrigin(origins = "http://localhost:8080")
 public class JwtTokenController {
     private final static String ARQUIVO = "arquivo";
     private final static String LOGIN = "login";

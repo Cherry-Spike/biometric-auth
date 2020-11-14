@@ -17,7 +17,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1")
-@CrossOrigin(origins = "http://localhost:8080")
 public class ImpressaoDigitalController {
     private final ImpressaoDigitalServico impressaoDigitalServico;
     private final static String IMPRESSAO_DIGITAL = "/impressaoDigital";
@@ -29,7 +28,7 @@ public class ImpressaoDigitalController {
         this.impressaoDigitalServico = impressaoDigitalServico;
     }
 
-    @Secured("ROLE_ADMIN")
+//    @Secured("ROLE_ADMIN")
     @PostMapping(value = SALVAR_DIGITAL, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<ImpressaoDigitalRespostaDTO>> salvar(@RequestParam(ARQUIVO) MultipartFile arquivo, @PathVariable(USUARIO_ID) long usuarioId) {
         Reposta<ImpressaoDigitalRespostaDTO> resposta = new Reposta<>();
@@ -58,7 +57,7 @@ public class ImpressaoDigitalController {
         }
     }
 
-    @Secured("ROLE_ADMIN")
+//    @Secured("ROLE_ADMIN")
     @PutMapping(value = SALVAR_DIGITAL, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<ImpressaoDigitalRespostaDTO>> atualizar (@RequestParam(ARQUIVO) MultipartFile arquivo, @PathVariable(USUARIO_ID) long usuarioId) {
         Reposta<ImpressaoDigitalRespostaDTO> resposta = new Reposta<>();

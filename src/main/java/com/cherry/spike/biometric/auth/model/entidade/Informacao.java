@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 public class Informacao {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="ID_Informacao", nullable=false)
     private long id;
     @NonNull

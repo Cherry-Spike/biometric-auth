@@ -13,6 +13,7 @@ import com.cherry.spike.biometric.auth.repository.UsuarioRepositorio;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -79,8 +80,6 @@ public class UsuarioServico {
 
     public Optional<Usuario> obterPorId(long id) {
         Optional<Usuario> usuario = usuarioRepositorio.findById(id);
-        if (usuario.isPresent())
-            Optional.of(usuario);
         return usuario;
     }
 
@@ -99,5 +98,14 @@ public class UsuarioServico {
             impDigitalRepositorio.delete(impressaoDigital.get());
 
         usuarioRepositorio.delete(usuario.get());
+    }
+
+    public List<Usuario> obterTodos() {
+            return usuarioRepositorio.findAll();
+    }
+
+    public Optional<Usuario> obterPorLogin(String login) {
+        Optional<Usuario> usuario = usuarioRepositorio.findByLogin(login);
+        return usuario;
     }
 }
