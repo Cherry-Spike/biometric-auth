@@ -91,7 +91,7 @@ public class UsuarioController {
         }
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping(value = USUARIO_POR_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<UsuarioRespostaDTO>> obterPorId(@PathVariable("id") long id) {
         Reposta<UsuarioRespostaDTO> reposta = new Reposta<>();
@@ -115,7 +115,7 @@ public class UsuarioController {
         }
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping(value = USUARIO_POR_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<UsuarioRespostaDTO>> obterPorLogin(@RequestParam("login") String login) {
         Reposta<UsuarioRespostaDTO> reposta = new Reposta<>();
@@ -139,7 +139,7 @@ public class UsuarioController {
         }
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping(value = USUARIO, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<List<UsuarioRespostaDTO>>> obterTodos() {
         Reposta<List<UsuarioRespostaDTO>> reposta = new Reposta<>();

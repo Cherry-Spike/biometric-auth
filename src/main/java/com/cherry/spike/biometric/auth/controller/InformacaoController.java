@@ -64,7 +64,7 @@ public class InformacaoController {
         }
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping(value = INFORMACAO_POR_USUARIO, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<List<InformacaoRespostaDTO>>> obterPorUsuarioId(@PathVariable("usuarioId") long usuarioId) {
         Reposta<List<InformacaoRespostaDTO>> reposta = new Reposta<>();

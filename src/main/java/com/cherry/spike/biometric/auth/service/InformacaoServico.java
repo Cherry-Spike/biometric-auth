@@ -34,7 +34,9 @@ public class InformacaoServico {
             throw new NivelInvalidoException(NIVEL_NAO_ENCONTRADO);
 
         Nivel nivel = nivelRepositorio.findById(informacaoDTO.getNivelId()).get();
-        Informacao informacao = Informacao.novo(informacaoDTO.getDescricao(), nivel, informacaoDTO.getAgrotoxico(), informacaoDTO.getEndereco());
+        Informacao informacao = Informacao.novo(nivel, informacaoDTO.getDescricao(),
+                informacaoDTO.getRiscoSubterraneoGus(), informacaoDTO.getRiscoSubterraneoEpa(),
+                informacaoDTO.getRiscoSuperficialGossSedimental(), informacaoDTO.getRiscoSuperficialGossDissolvido(), informacaoDTO.getEndereco());
 
         return Optional.of(informacaoRepositorio.save(informacao));
     }
@@ -49,6 +51,6 @@ public class InformacaoServico {
         if(!usuario.isPresent())
             throw new UsuarioNaoEncontradoException(USUARIO_NAO_ENCONTRADO_MENSAGEM);
 
-        return informacaoRepositorio.findAllByNivel(usuario.get().getCargo().getNivel());
+        return informacaoRepositorio.findByNivel(usuario.get().getCargo().getNivel());
     }
 }

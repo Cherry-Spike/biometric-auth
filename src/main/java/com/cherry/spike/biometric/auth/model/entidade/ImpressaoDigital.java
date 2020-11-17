@@ -11,8 +11,8 @@ import javax.persistence.*;
 @Getter @Setter
 public class ImpressaoDigital {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID_Digital")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdDigital")
     private long id;
     @NonNull
     @Column(name = "Nome", nullable = false)
@@ -26,6 +26,6 @@ public class ImpressaoDigital {
     private byte[] conteudo;
     @NonNull
     @OneToOne(optional = false)
-    @JoinColumn(name = "Usuario_ID")
+    @JoinColumn(name = "Usuario_Id")
     private Usuario usuario;
 }

@@ -10,19 +10,28 @@ import javax.persistence.*;
 @Getter
 public class Informacao {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="ID_Informacao", nullable=false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="IdInformacao", nullable=false)
     private long id;
     @NonNull
-    @Column(name="Risco", nullable=false)
-    private String risco;
-    @NonNull
     @OneToOne(optional = false)
-    @JoinColumn(name = "Nivel_ID")
+    @JoinColumn(name = "NivelId")
     private Nivel nivel;
     @NonNull
-    @Column(name="Agrotoxico", nullable=false)
-    private String agrotoxico;
+    @Column(name="Descricao", nullable=false)
+    private String descricao;
+    @NonNull
+    @Column(name="RiscoSubterraneoGus", nullable=false)
+    private String riscoSubterraneoGus;
+    @NonNull
+    @Column(name="RiscoSubterraneoEpa", nullable=false)
+    private String riscoSubterraneoEpa;
+    @NonNull
+    @Column(name="RiscoSuperficialGossSedimental", nullable=false)
+    private String riscoSuperficialGossSedimental;
+    @NonNull
+    @Column(name="RiscoSuperficialGossDissolvido", nullable=false)
+    private String riscoSuperficialGossDissolvido;
     @NonNull
     @Column(name="Endereco", nullable=false)
     private String endereco;

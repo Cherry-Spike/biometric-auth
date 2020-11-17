@@ -1,18 +1,17 @@
 package com.cherry.spike.biometric.auth.model.entidade;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
 
-@Entity(name = "tbl_Usuario")
+@Entity
 @NoArgsConstructor
 @RequiredArgsConstructor(staticName = "novo")
 @Getter @Setter
 public class Usuario {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="ID_Usuario", nullable=false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="IdUsuario", nullable=false)
     private long id;
     @Column(name="Nome", nullable=false)
     @NonNull

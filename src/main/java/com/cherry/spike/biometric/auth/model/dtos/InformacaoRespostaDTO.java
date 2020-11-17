@@ -1,6 +1,7 @@
 package com.cherry.spike.biometric.auth.model.dtos;
 
 import com.cherry.spike.biometric.auth.model.entidade.Informacao;
+import com.cherry.spike.biometric.auth.model.entidade.Nivel;
 import lombok.*;
 import org.modelmapper.ModelMapper;
 
@@ -8,18 +9,19 @@ import org.modelmapper.ModelMapper;
 @NoArgsConstructor()
 @Getter @Setter
 public class InformacaoRespostaDTO {
+    private long id;
     private String descricao;
-    private long nivelId;
-    private String nivelDescricao;
-    private String agrotoxico;
+    private Nivel nivel;
+    private String riscoSubterraneoGus;
+    private String riscoSubterraneoEpa;
+    private String riscoSuperficialGossSedimental;
+    private String riscoSuperficialGossDissolvido;
     private String endereco;
 
     public static InformacaoRespostaDTO converterEntidadeParaDTO(Informacao informacao) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.typeMap(Informacao.class, InformacaoRespostaDTO.class)
-                .addMapping( src -> src.getNivel().getId(), InformacaoRespostaDTO::setNivelId);
-        modelMapper.typeMap(Informacao.class, InformacaoRespostaDTO.class)
-                .addMapping( src -> src.getNivel().getDescricao(), InformacaoRespostaDTO::setNivelDescricao);
+                .addMapping( src -> src.getNivel(), InformacaoRespostaDTO::setNivel);
         return modelMapper.map(informacao, InformacaoRespostaDTO.class);
     }
 }

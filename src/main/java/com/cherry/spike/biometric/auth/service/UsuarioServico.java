@@ -93,7 +93,7 @@ public class UsuarioServico {
         if(!usuario.isPresent())
             throw new UsuarioNaoEncontradoException(USUARIO_NAO_ENCONTRADO_MENSAGEM);
 
-        Optional<ImpressaoDigital> impressaoDigital = impDigitalRepositorio.findByUsuarioId(id);
+        Optional<ImpressaoDigital> impressaoDigital = impDigitalRepositorio.findByUsuarioIdELogin(id, usuario.get().getLogin());
         if(impressaoDigital.isPresent())
             impDigitalRepositorio.delete(impressaoDigital.get());
 

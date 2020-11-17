@@ -23,7 +23,7 @@ public class CargoController {
         this.cargoServico = cargoServico;
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping(value = CARGOS, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reposta<List<Cargo>>> obterTodos() {
         Reposta<List<Cargo>> reposta = new Reposta<>();

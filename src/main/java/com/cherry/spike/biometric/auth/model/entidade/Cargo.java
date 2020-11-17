@@ -11,14 +11,15 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
+
 public class Cargo {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="ID_Cargo", nullable=false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="IdCargo", nullable=false)
     private long id;
     @Column(name="Descricao", nullable=false)
     private String descricao;
     @ManyToOne()
-    @JoinColumn(name = "Nivel_ID", referencedColumnName = "ID_Nivel")
+    @JoinColumn(name = "NivelId", referencedColumnName = "IdNivel")
     private Nivel nivel;
 }

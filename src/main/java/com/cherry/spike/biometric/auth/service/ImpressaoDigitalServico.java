@@ -41,7 +41,7 @@ public class ImpressaoDigitalServico {
         if (!usuario.isPresent())
             throw new UsuarioNaoEncontradoException(USUARIO_NAO_ENCONTRADO_MENSAGEM);
 
-        if(usuarioPossuiImpDigital(usuarioId))
+        if(usuarioPossuiImpDigital(usuario.get().getId(), usuario.get().getLogin()))
             throw new UsuarioPossuiImpDigitalException(USUARIO_JA_POSSUI_IMPDIGITAL_MENSAGEM);
 
         String nomeArquivo = StringUtils.cleanPath(arquivo.getOriginalFilename());
@@ -67,7 +67,8 @@ public class ImpressaoDigitalServico {
                 throw new UsuarioNaoEncontradoException("Usuario não encontrado");
 
             Optional<Usuario> usuario = usuarioRepositorio.findByLogin(login);
-            Optional<ImpressaoDigital> impressaoDigital = impDigitalRepositorio.findByUsuarioId(usuario.get().getId());
+            Optional<ImpressaoDigital> impressaoDigital = impDigitalRepositorio
+                    .findByUsuarioIdELogin(usuario.get().getId(), usuario.get().getLogin());
 
             FingerprintTemplate impressaoDigitalBd = new FingerprintTemplate(
                     new FingerprintImage()
@@ -90,7 +91,12 @@ public class ImpressaoDigitalServico {
     }
 
     public Optional<ImpressaoDigital> atualizar(MultipartFile arquivo, long usuarioId) throws IOException {
-        Optional<ImpressaoDigital> impDigital = impDigitalRepositorio.findByUsuarioId(usuarioId);
+        if (!ehUsuarioValido(usuarioId))
+            throw new UsuarioNaoEncontradoException("Usuario não encontrado");
+
+        Optional<Usuario> usuario = usuarioRepositorio.findById(usuarioId);
+
+        Optional<ImpressaoDigital> impDigital = impDigitalRepositorio.findByUsuarioIdELogin(usuario.get().getId(), usuario.get().getLogin());
         if(!impDigital.isPresent())
             throw new ImpressaoDigitaLNaoEncontradaException(USUARIO_NAO_POSSUI_IMPDIGITAL_MENSAGEM);
 
@@ -101,7 +107,7 @@ public class ImpressaoDigitalServico {
         return Optional.of(impDigitalRepositorio.save(impDigital.get()));
     }
 
-    private boolean usuarioPossuiImpDigital(long usuarioId) {
-        return impDigitalRepositorio.findByUsuarioId(usuarioId).isPresent();
+    private boolean usuarioPossuiImpDigital(long usuarioId, String login) {
+        return impDigitalRepositorio.findByUsuarioIdELogin(usuarioId, login).isPresent();
     }
 }
