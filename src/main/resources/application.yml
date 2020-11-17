@@ -2,9 +2,7 @@ jwt:
   secret: Ch&rrySpike998
 spring:
   datasource:
-    url: jdbc:mysql://us-cdbr-east-02.cleardb.com:3306/heroku_357c6877d6c86c4
-    username:
-    password:
+    url: ${JDBC_DATABASE_URL}
 
 
   #  datasource:
