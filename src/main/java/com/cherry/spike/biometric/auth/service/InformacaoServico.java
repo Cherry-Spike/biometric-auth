@@ -51,6 +51,6 @@ public class InformacaoServico {
         if(!usuario.isPresent())
             throw new UsuarioNaoEncontradoException(USUARIO_NAO_ENCONTRADO_MENSAGEM);
 
-        return informacaoRepositorio.findByNivel(usuario.get().getCargo().getNivel());
+        return informacaoRepositorio.findByNivel(usuario.get().getCargo().getNivel().getId());
     }
 }

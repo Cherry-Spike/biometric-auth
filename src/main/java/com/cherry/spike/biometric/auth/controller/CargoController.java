@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1")
-@CrossOrigin(origins = "http://localhost:8080")
 public class CargoController {
     private static final String CARGOS = "/cargos";
     private final CargoServico cargoServico;

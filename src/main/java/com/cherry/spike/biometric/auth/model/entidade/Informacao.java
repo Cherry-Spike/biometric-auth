@@ -14,8 +14,8 @@ public class Informacao {
     @Column(name="IdInformacao", nullable=false)
     private long id;
     @NonNull
-    @OneToOne(optional = false)
-    @JoinColumn(name = "NivelId")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "NivelId", referencedColumnName = "IdNivel")
     private Nivel nivel;
     @NonNull
     @Column(name="Descricao", nullable=false)
